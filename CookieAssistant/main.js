@@ -9,7 +9,7 @@ if(typeof CCSE == 'undefined')
 
 CookieAssistant.name = 'Cookie Assistant';
 CookieAssistant.version = '0.7.1';
-CookieAssistant.GameVersion = '2.043';
+CookieAssistant.GameVersion = '2.048';
 
 
 CookieAssistant.launch = function()
@@ -1041,7 +1041,10 @@ CookieAssistant.launch = function()
 			}
 			Game.Objects[objectName].sell(amount);
 			CookieAssistant.config.particular.sell.isAfterSell[index] = 1;
-			CookieAssistant.isAfterSpellcast = false;
+			if(isMode4)
+			{
+				CookieAssistant.isAfterSpellcast = false;
+			}
 			return true;
 		}
 	}
