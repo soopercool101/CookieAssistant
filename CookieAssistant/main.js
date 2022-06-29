@@ -8,7 +8,7 @@ if(typeof CCSE == 'undefined')
 }
 
 CookieAssistant.name = 'Cookie Assistant';
-CookieAssistant.version = '0.7.1';
+CookieAssistant.version = '0.7.0';
 CookieAssistant.GameVersion = '2.048';
 
 
@@ -423,6 +423,9 @@ CookieAssistant.launch = function()
 						{
 							switch(Game.buffs[i].type.name)
 							{
+								case "blood frenzy": //elder frenzy (x666)
+									buffCount += 3;
+									break;
 								case "dragonflight":
 								case "click frenzy":
 									cliclBuffCount++;
@@ -430,7 +433,6 @@ CookieAssistant.launch = function()
 									break;
 								case "dragon harvest":
 								case "frenzy":
-								case "blood frenzy": //elder frenzy (x666)
 								case "sugar frenzy":
 								case "building buff":
 								case "devastation":
@@ -503,8 +505,10 @@ CookieAssistant.launch = function()
 						{
 							switch(Game.buffs[i].type.name)
 							{
-								case "frenzy":
 								case "blood frenzy": //elder frenzy (x666)
+									buffCount += 3;
+									break;
+								case "frenzy":
 								case "dragon harvest":
 								case "click frenzy":
 								case "dragonflight":
@@ -874,6 +878,9 @@ CookieAssistant.launch = function()
 						{
 							switch(Game.buffs[i].type.name)
 							{
+								case "blood frenzy": //elder frenzy (x666)
+									buffCount += 3;
+									break;
 								case "dragonflight":
 								case "click frenzy":
 									cliclBuffCount++;
@@ -881,7 +888,6 @@ CookieAssistant.launch = function()
 									break;
 								case "dragon harvest":
 								case "frenzy":
-								case "blood frenzy": //elder frenzy (x666)
 								case "sugar frenzy":
 								case "building buff":
 								case "devastation":
@@ -1006,6 +1012,9 @@ CookieAssistant.launch = function()
 		{
 			switch(Game.buffs[i].type.name)
 			{
+				case "blood frenzy": //elder frenzy (x666)
+					buffCount += 3;
+					break;
 				case "dragonflight":
 				case "click frenzy":
 					cliclBuffCount++;
@@ -1013,7 +1022,6 @@ CookieAssistant.launch = function()
 					break;
 				case "dragon harvest":
 				case "frenzy":
-				case "blood frenzy": //elder frenzy (x666)
 				case "sugar frenzy":
 				case "building buff":
 					buffCount++;
