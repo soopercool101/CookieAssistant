@@ -79,6 +79,8 @@ CookieAssistant.launch = function()
 				buildings:
 				{
 					mode: 0,
+					mode2: 0, //business buff option
+					count: 650
 				},
 				spirits:
 				{
@@ -251,6 +253,22 @@ CookieAssistant.launch = function()
 				{
 					amount: 100,
 					desc: "Buy every 100 pieces / 100個単位で購入する",
+				},
+				3:
+				{
+					amount: 1,
+					desc: "Buy every piece",
+				},
+			},
+			buildings_when:
+			{
+				0:
+				{
+					desc: "Always / 常に"
+				},
+				1:
+				{
+					desc: "When Business Day buff is active",
 				},
 			},
 			golden:
@@ -777,7 +795,27 @@ CookieAssistant.launch = function()
 									continue;
 								}
 							}
-							if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount))
+							
+							if(CookieAssistant.config.particular.buildings.mode2 == 1)
+							{
+								var hasBuff = false;
+								for (var i in Game.buffs)
+								{
+									switch(Game.buffs[i].type.name)
+									{
+										case "everything must go":
+											hasBuff = true;
+										default:
+											break;
+									}
+								}
+								if(!hasBuff)
+								{
+									return;
+								}
+							}
+							
+							if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount) && Game.Objects[objectName].amount + amount <= CookieAssistant.config.particular.buildings.count)
 							{
 								//売却モードだったら強制的に購入モードにする
 								if (Game.buyMode < 0)
@@ -1338,7 +1376,13 @@ CookieAssistant.launch = function()
 					+ '<label>MODE : </label>'
 					+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.buildings.mode++; if(CookieAssistant.config.particular.buildings.mode >= Object.keys(CookieAssistant.modes.buildings).length){CookieAssistant.config.particular.buildings.mode = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
 							+ CookieAssistant.modes.buildings[CookieAssistant.config.particular.buildings.mode].desc
-					+ '</a><br />'
+					+ '</a>';
+		str += '<label>Until : </label>'
+			+ m.InputBox("CookieAssistant_Count_autoBuyBuildings", 40, CookieAssistant.config.particular.buildings.count, "CookieAssistant.config.particular.buildings.count = this.value")
+				+ '<label>WHEN </label>'
+				+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.buildings.mode2++; if(CookieAssistant.config.particular.buildings.mode2 >= Object.keys(CookieAssistant.modes.buildings_when).length){CookieAssistant.config.particular.buildings.mode2 = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
+						+ CookieAssistant.modes.buildings_when[CookieAssistant.config.particular.buildings.mode2].desc
+				+ '</a>'
 				+ '</div>'
 				+ '</div>';
 		//砂糖玉自動収穫
