@@ -89,6 +89,7 @@ CookieAssistant.launch = function()
 				golden:
 				{
 					mode: 0,
+					mode2: 0, //debuff count condition
 				},
 				bigCookie:
 				{
@@ -261,6 +262,17 @@ CookieAssistant.launch = function()
 				1:
 				{
 					desc: "Ignore Wrath Cookie / 怒りのクッキーは無視する"
+				}
+			},
+			golden_mode:
+			{
+				0:
+				{
+					desc: "Always / 常に"
+				},
+				1:
+				{
+					desc: "Have no debuffs"
 				}
 			},
 			sell_buildings: //建物自動売却の発動条件
@@ -467,10 +479,33 @@ CookieAssistant.launch = function()
 				CookieAssistant.intervalHandles.autoClickGoldenCookie = setInterval(
 					() =>
 					{
-						Game.shimmers
-							.filter(shimmer => shimmer.type == "golden")
-							.filter(shimmer => !(CookieAssistant.config.particular.golden.mode == 1 &&shimmer.wrath != 0))
-							.forEach(shimmer => shimmer.pop())
+						let debuffCount = 0;
+						if(CookieAssistant.config.particular.golden.mode2 == 1)
+						{
+							for (let i in Game.buffs)
+							{
+								switch(Game.buffs[i].type.name)
+								{
+									case "cookie storm":
+									case "blood frenzy": //elder frenzy (x666)
+										debuffCount = -10000; // If these are going on, ignore debuffs
+										break;
+									case "clot":
+									case "building debuff":
+										debuffCount++;
+										break;
+									default:
+										break;
+								}
+							}
+						}
+						if(debuffCount <= 0)
+						{
+							Game.shimmers
+								.filter(shimmer => shimmer.type == "golden")
+								.filter(shimmer => !(CookieAssistant.config.particular.golden.mode == 1 &&shimmer.wrath != 0))
+								.forEach(shimmer => shimmer.pop())
+						}
 					},
 					CookieAssistant.config.intervals.autoClickGoldenCookie
 				)
@@ -1232,6 +1267,10 @@ CookieAssistant.launch = function()
 					+ '<label>MODE : </label>'
 					+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.golden.mode++; if(CookieAssistant.config.particular.golden.mode >= Object.keys(CookieAssistant.modes.golden).length){CookieAssistant.config.particular.golden.mode = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
 							+ CookieAssistant.modes.golden[CookieAssistant.config.particular.golden.mode].desc
+					+ '</a>'
+					+ '<label> AND </label>'
+					+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.golden.mode2++; if(CookieAssistant.config.particular.golden.mode2 >= Object.keys(CookieAssistant.modes.golden_mode).length){CookieAssistant.config.particular.golden.mode2 = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
+							+ CookieAssistant.modes.golden_mode[CookieAssistant.config.particular.golden.mode2].desc
 					+ '</a><br />'
 				+ '</div>'
 				+ '</div>';
