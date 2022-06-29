@@ -167,7 +167,7 @@ CookieAssistant.launch = function()
 		);
 
 
-		CookieAssistant.showAllIntervals = false;
+		CookieAssistant.showAllIntervals = true;
 		CookieAssistant.isAfterSpellcast = false;
 
 		CookieAssistant.intervalHandles = 
