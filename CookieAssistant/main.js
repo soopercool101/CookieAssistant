@@ -993,6 +993,10 @@ CookieAssistant.launch = function()
 				{
 					grimoire.castSpell(spell);
 				}
+				else
+				{
+					return false;
+				}
 			}
 			if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount))
 			{
