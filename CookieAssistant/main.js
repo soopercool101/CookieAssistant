@@ -781,49 +781,64 @@ CookieAssistant.launch = function()
 						{
 							return;
 						}
+						
+						if(CookieAssistant.config.particular.buildings.mode2 == 1)
+						{
+							var hasBuff = false;
+							for (var i in Game.buffs)
+							{
+								switch(Game.buffs[i].type.name)
+								{
+									case "everything must go":
+										hasBuff = true;
+										break;
+									default:
+										break;
+								}
+							}
+							if(!hasBuff)
+							{
+								return;
+							}
+						}
+						
 						var amountPerPurchase = CookieAssistant.modes.buildings[CookieAssistant.config.particular.buildings.mode].amount;
 						for (const objectName in Game.Objects)
 						{
-							var amount = Game.Objects[objectName].amount % amountPerPurchase == 0 ? amountPerPurchase : amountPerPurchase - Game.Objects[objectName].amount % amountPerPurchase;
-							var isMaxDragon = Game.dragonLevel >= Game.dragonLevels.length - 1;
-							//ドラゴンの自動育成がONの場合は建物の自動購入を制限する
-							if (!isMaxDragon && CookieAssistant.config.flags.autoTrainDragon && Game.Objects[objectName].amount >= 350 - amountPerPurchase)
+							// Don't buy buildings marked for auto-sell
+							var isMarkedForSell = false;
+							for(var i = 0; i < CookieAssistant.config.particular.sell.isAfterSell.length; i++)
 							{
-								amount = 350 - Game.Objects[objectName].amount;
-								if (amount <= 0)
+								var target = CookieAssistant.config.particular.sell.target[i];
+								var sellObjectName = Game.ObjectsById[target].name;
+								if(sellObjectName == objectName)
 								{
-									continue;
+									isMarkedForSell = true;
 								}
 							}
-							
-							if(CookieAssistant.config.particular.buildings.mode2 == 1)
+							if(!isMarkedForSell)
 							{
-								var hasBuff = false;
-								for (var i in Game.buffs)
+								var amount = Game.Objects[objectName].amount % amountPerPurchase == 0 ? amountPerPurchase : amountPerPurchase - Game.Objects[objectName].amount % amountPerPurchase;
+								var isMaxDragon = Game.dragonLevel >= Game.dragonLevels.length - 1;
+								//ドラゴンの自動育成がONの場合は建物の自動購入を制限する
+								if (!isMaxDragon && CookieAssistant.config.flags.autoTrainDragon && Game.Objects[objectName].amount >= 350 - amountPerPurchase)
 								{
-									switch(Game.buffs[i].type.name)
+									amount = 350 - Game.Objects[objectName].amount;
+									if (amount <= 0)
 									{
-										case "everything must go":
-											hasBuff = true;
-											break;
-										default:
-											break;
+										continue;
 									}
 								}
-								if(!hasBuff)
+								
+								if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount) && Game.Objects[objectName].amount + amount <= CookieAssistant.config.particular.buildings.count)
 								{
-									return;
+									//売却モードだったら強制的に購入モードにする
+									if (Game.buyMode < 0)
+									{
+										Game.buyMode = 1;
+									}
+									Game.Objects[objectName].buy(amount);
 								}
-							}
-							
-							if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount) && Game.Objects[objectName].amount + amount <= CookieAssistant.config.particular.buildings.count)
-							{
-								//売却モードだったら強制的に購入モードにする
-								if (Game.buyMode < 0)
-								{
-									Game.buyMode = 1;
-								}
-								Game.Objects[objectName].buy(amount);
 							}
 						}
 					},
