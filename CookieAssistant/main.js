@@ -805,6 +805,7 @@ CookieAssistant.launch = function()
 									{
 										case "everything must go":
 											hasBuff = true;
+											break;
 										default:
 											break;
 									}
