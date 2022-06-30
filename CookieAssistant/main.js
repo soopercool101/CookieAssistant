@@ -805,31 +805,33 @@ CookieAssistant.launch = function()
 						var amountPerPurchase = CookieAssistant.modes.buildings[CookieAssistant.config.particular.buildings.mode].amount;
 						for (const objectName in Game.Objects)
 						{
+							var amount = Game.Objects[objectName].amount % amountPerPurchase == 0 ? amountPerPurchase : amountPerPurchase - Game.Objects[objectName].amount % amountPerPurchase;
+							var isMaxDragon = Game.dragonLevel >= Game.dragonLevels.length - 1;
+							//ドラゴンの自動育成がONの場合は建物の自動購入を制限する
+							if (!isMaxDragon && CookieAssistant.config.flags.autoTrainDragon && Game.Objects[objectName].amount >= 350 - amountPerPurchase)
+							{
+								amount = 350 - Game.Objects[objectName].amount;
+								if (amount <= 0)
+								{
+									continue;
+								}
+							}
 							// Don't buy buildings marked for auto-sell
 							var isMarkedForSell = false;
-							for(var i = 0; i < CookieAssistant.config.particular.sell.isAfterSell.length; i++)
+							if(CookieAssistant.config.flags.autoSellBuilding)
 							{
-								var target = CookieAssistant.config.particular.sell.target[i];
-								var sellObjectName = Game.ObjectsById[target].name;
-								if(sellObjectName == objectName)
+								for(var i = 0; i < CookieAssistant.config.particular.sell.isAfterSell.length; i++)
 								{
-									isMarkedForSell = true;
+									var target = CookieAssistant.config.particular.sell.target[i];
+									var sellObjectName = Game.ObjectsById[target].name;
+									if(sellObjectName == objectName)
+									{
+										isMarkedForSell = true;
+									}
 								}
 							}
 							if(!isMarkedForSell)
 							{
-								var amount = Game.Objects[objectName].amount % amountPerPurchase == 0 ? amountPerPurchase : amountPerPurchase - Game.Objects[objectName].amount % amountPerPurchase;
-								var isMaxDragon = Game.dragonLevel >= Game.dragonLevels.length - 1;
-								//ドラゴンの自動育成がONの場合は建物の自動購入を制限する
-								if (!isMaxDragon && CookieAssistant.config.flags.autoTrainDragon && Game.Objects[objectName].amount >= 350 - amountPerPurchase)
-								{
-									amount = 350 - Game.Objects[objectName].amount;
-									if (amount <= 0)
-									{
-										continue;
-									}
-								}
-								
 								if (Game.cookies >= Game.Objects[objectName].getSumPrice(amount) && Game.Objects[objectName].amount + amount <= CookieAssistant.config.particular.buildings.count)
 								{
 									//売却モードだったら強制的に購入モードにする
