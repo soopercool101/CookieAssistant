@@ -463,6 +463,7 @@ CookieAssistant.launch = function()
 									break;
 								case "dragonflight":
 								case "click frenzy":
+								case "cursed finger":
 									cliclBuffCount++;
 									buffCount++;
 									break;
@@ -473,7 +474,6 @@ CookieAssistant.launch = function()
 								case "devastation":
 									buffCount++;
 									break;
-								case "cursed finger":
 								default:
 									break;
 							}
