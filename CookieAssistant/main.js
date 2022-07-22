@@ -694,7 +694,7 @@ CookieAssistant.launch = function()
 						let isCompletes = [
 							(Game.GetHowManyHeartDrops() / Game.heartDrops.length) >= 1,
 							((Game.GetHowManySantaDrops() / Game.santaDrops.length) >= 1) && ((Game.GetHowManyReindeerDrops() / Game.reindeerDrops.length) >= 1) && Game.santaLevel >= 14,
-							CookieAssistant.config.flags.autoChocolateEgg ? (Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 : (Game.GetHowManyEggs() / Game.easterEggs.length - 1) >= 1 && !Game.Has("Chocolate egg"),
+							(Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 || (CookieAssistant.config.flags.autoChocolateEgg && Game.GetHowManyEggs() == Game.easterEggs.length - 1 && Game.UpgradesInStore.find(x => x.name == "Chocolate egg") != undefined),
 							(Game.GetHowManyHalloweenDrops() / Game.halloweenDrops.length) >= 1,
 						];
 
@@ -1179,14 +1179,9 @@ CookieAssistant.launch = function()
 		let isCompletes = [
 			(Game.GetHowManyHeartDrops() / Game.heartDrops.length) >= 1,
 			((Game.GetHowManySantaDrops() / Game.santaDrops.length) >= 1) && ((Game.GetHowManyReindeerDrops() / Game.reindeerDrops.length) >= 1) && Game.santaLevel >= 14,
-			(Game.GetHowManyEggs() / Game.easterEggs.length) >= 1,
+			(Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 || (CookieAssistant.config.flags.autoChocolateEgg && Game.GetHowManyEggs() == Game.easterEggs.length - 1 && Game.UpgradesInStore.find(x => x.name == "Chocolate egg") != undefined),
 			(Game.GetHowManyHalloweenDrops() / Game.halloweenDrops.length) >= 1,
 		];
-		
-		if (CookieAssistant.config.flags.autoChocolateEgg && !isCompletes[2])
-		{
-			isCompletes[2] = Game.GetHowManyEggs() == Game.easterEggs.length - 1 && !Game.Has("Chocolate egg");
-		}
 
 		let targetSeason = "";
 		let afterCompleteSeason = CookieAssistant.modes.season[CookieAssistant.config.particular.season.afterComplete].season;
