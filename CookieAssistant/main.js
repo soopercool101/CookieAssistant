@@ -108,6 +108,7 @@ CookieAssistant.launch = function()
 				wrinkler:
 				{
 					mode: 0,
+					mode2: 0,
 				},
 				bigCookie:
 				{
@@ -349,6 +350,17 @@ CookieAssistant.launch = function()
 				{
 					desc: "Except Shiny Wrinkler / ピカピカのシワシワ虫を除く"
 				},
+			},
+			wrinkler_mode:
+			{
+				0:
+				{
+					desc: "Always / 常に"
+				},
+				1:
+				{
+					desc: "To acquire holiday upgrades"
+				}
 			},
 			bigCookie:
 			{
@@ -614,6 +626,27 @@ CookieAssistant.launch = function()
 				CookieAssistant.intervalHandles.autoClickWrinklers = setInterval(
 					() =>
 					{
+						if(CookieAssistant.config.particular.wrinkler.mode2 == 1)
+						{
+							if(Game.season == "halloween")
+							{
+								if((Game.GetHowManyHalloweenDrops() / Game.halloweenDrops.length) >= 1)
+								{
+									return;
+								}
+							}
+							else if(Game.season == "easter")
+							{
+								if((Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 || (CookieAssistant.config.flags.autoChocolateEgg && Game.GetHowManyEggs() == Game.easterEggs.length - 1 && Game.UpgradesInStore.find(x => x.name == "Chocolate egg") != undefined))
+								{
+									return;
+								}
+							}
+							else
+							{
+								return;
+							}
+						}
 						Game.wrinklers.forEach(wrinkler =>
 						{
 							if (wrinkler.close == 1)
@@ -1341,6 +1374,10 @@ CookieAssistant.launch = function()
 							+ '<label>MODE : </label>'
 							+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.wrinkler.mode++; if(CookieAssistant.config.particular.wrinkler.mode >= Object.keys(CookieAssistant.modes.wrinkler).length){CookieAssistant.config.particular.wrinkler.mode = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
 									+ CookieAssistant.modes.wrinkler[CookieAssistant.config.particular.wrinkler.mode].desc
+							+ '</a>'
+							+ '<label> WHEN </label>'
+							+ '<a class="option" ' + Game.clickStr + '=" CookieAssistant.config.particular.wrinkler.mode2++; if(CookieAssistant.config.particular.wrinkler.mode2 >= Object.keys(CookieAssistant.modes.wrinkler_mode).length){CookieAssistant.config.particular.wrinkler.mode2 = 0;} Game.UpdateMenu(); PlaySound(\'snd/tick.mp3\');">'
+									+ CookieAssistant.modes.wrinkler_mode[CookieAssistant.config.particular.wrinkler.mode2].desc
 							+ '</a><br />'
 						+ '</div>'
 				+ '</div>';
