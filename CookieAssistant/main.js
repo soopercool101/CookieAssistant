@@ -360,6 +360,10 @@ CookieAssistant.launch = function()
 				1:
 				{
 					desc: "To acquire holiday upgrades"
+				},
+				2:
+				{
+					desc: "To acquire holiday upgrades, and after holidays are complete"
 				}
 			},
 			bigCookie:
@@ -626,25 +630,30 @@ CookieAssistant.launch = function()
 				CookieAssistant.intervalHandles.autoClickWrinklers = setInterval(
 					() =>
 					{
-						if(CookieAssistant.config.particular.wrinkler.mode2 == 1)
+						if(CookieAssistant.config.particular.wrinkler.mode2 != 0)
 						{
-							if(Game.season == "halloween")
+							var halloweenComplete = (Game.GetHowManyHalloweenDrops() / Game.halloweenDrops.length) >= 1;
+							var easterComplete = (Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 || (CookieAssistant.config.flags.autoChocolateEgg && Game.GetHowManyEggs() == Game.easterEggs.length - 1 && Game.UpgradesInStore.find(x => x.name == "Chocolate egg") != undefined);
+							if(!(CookieAssistant.config.particular.wrinkler.mode2 == 2 && halloweenComplete && easterComplete))
 							{
-								if((Game.GetHowManyHalloweenDrops() / Game.halloweenDrops.length) >= 1)
+								if(Game.season == "halloween")
+								{
+									if(halloweenComplete)
+									{
+										return;
+									}
+								}
+								else if(Game.season == "easter")
+								{
+									if(easterComplete)
+									{
+										return;
+									}
+								}
+								else
 								{
 									return;
 								}
-							}
-							else if(Game.season == "easter")
-							{
-								if((Game.GetHowManyEggs() / Game.easterEggs.length) >= 1 || (CookieAssistant.config.flags.autoChocolateEgg && Game.GetHowManyEggs() == Game.easterEggs.length - 1 && Game.UpgradesInStore.find(x => x.name == "Chocolate egg") != undefined))
-								{
-									return;
-								}
-							}
-							else
-							{
-								return;
 							}
 						}
 						Game.wrinklers.forEach(wrinkler =>
